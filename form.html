@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>訂位表單</title>
+</head>
+<body class="form-body">
+    <a href="index.html">
+        <div class="image-wrapper3"> 
+            <img src="img/S__104742934.jpg" alt="Image" class="news-image">
+       </div>
+     </a>
+    <img src="img/S__104628275.jpg" height="100px" style="display:block; margin:auto;">
+    <nav class="form-nav">
+        <ul class="nav-list">
+            <li class="nav-list-item">
+                <a href="index.html#intro" class="nav-list-item-link">品牌簡介</a>
+            </li>
+            <li class="nav-list-item">
+                <a href="news.html" class="nav-list-item-link">最新消息</a>
+            </li>
+            <li class="nav-list-item">
+                <a href="menu.html" class="nav-list-item-link">餐點菜單</a>
+            </li>
+            <li class="nav-list-item">
+                <a href="#" class="nav-list-item-link">相關資訊</a>
+                <ul class="nav-sublist">
+                    <li class="nav-list-item"><a href="index.html#footer" class="nav-list-item-link">聯絡我們</a></li>
+                    <li class="nav-list-item"><a href="form.html" class="nav-list-item-link">訂位表單</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <form class="form" id="reservationForm">
+        <p>姓名:</p>
+        <p><input type="text" id="name"></p>
+
+        <p>聯絡電話:</p>
+        <p><input id="phone" type="text"></p>
+
+        <p>想預約的時段: </p>
+        <p><textarea id="time"></textarea></p>
+
+        <p>備註: </p>
+        <p><textarea id="comments"></textarea></p>
+
+        <p>用餐人數: （超過四位請電話預約，感謝您！）</p>
+        <p><input type="radio" name="numberOfPeople" value="1"> 1</p>
+        <p><input type="radio" name="numberOfPeople" value="2"> 2</p>
+        <p><input type="radio" name="numberOfPeople" value="3"> 3</p>
+        <p><input type="radio" name="numberOfPeople" value="4"> 4</p>
+
+        <a href="thanks.html" class="button" onclick="handleFormSubmitAndRedirect()">送出資料</a>
+
+        <!-- 添加一個隱藏的按鈕用於觸發表單提交 -->
+        <button id="submitButton" type="button" style="display: none;" onclick="handleFormSubmit()">提交</button>
+
+        <img src="img/img-6147-jpg-1630919054.jpg" class="form-img">
+    </form>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDLGn6Zb1RoGSDrOqzsbjcq-6GoUPklOD8",
+            authDomain: "shiyue-form.firebaseapp.com",
+            projectId: "shiyue-form",
+            storageBucket: "shiyue-form.appspot.com",
+            messagingSenderId: "336331528417",
+            appId: "1:336331528417:web:5be392845f443d0e59ffa0",
+            measurementId: "G-FBWPS1HKZC"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore();
+
+        function handleFormSubmit() {
+            const form = document.getElementById('reservationForm');
+            const name = form.querySelector('#name').value;
+            const phone = form.querySelector('#phone').value;
+            const reservationTime = form.querySelector('#time').value;
+            const comments = form.querySelector('#comments').value;
+            const numberOfPeople = form.querySelector('input[name="numberOfPeople"]:checked').value;
+
+            db.collection('reservations').add({
+                name: name,
+                phone: phone,
+                reservationTime: reservationTime,
+                comments: comments,
+                numberOfPeople: numberOfPeople
+            })
+            .then((docRef) => {
+                console.log('Document written with ID: ', docRef.id);
+            })
+            .catch((error) => {
+                console.error('Error adding document: ', error);
+            });
+        }
+
+        function handleFormSubmitAndRedirect() {
+            
+            document.getElementById('submitButton').click();
+
+            
+            window.location.href = "thanks.html";
+        }
+    </script>
+</body>
+</html>
